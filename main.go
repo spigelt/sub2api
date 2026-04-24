@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/sub2api/sub2api/handler"
 )
@@ -51,8 +52,11 @@ func main() {
 
 	addr := fmt.Sprintf("%s:%d", host, port)
 	server := &http.Server{
-		Addr:    addr,
-		Handler: router,
+		Addr:         addr,
+		Handler:      router,
+		ReadTimeout:  15 * time.Second, // added timeouts to avoid hanging connections
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
 
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
